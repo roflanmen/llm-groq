@@ -17,4 +17,4 @@ demo = gr.Interface(
     inputs=["text", "text"],
     outputs=["text"],
 )
-demo.launch(server_port=int(os.getenv("PORT", 7860)))
+demo.launch(server_name="0.0.0.0")
