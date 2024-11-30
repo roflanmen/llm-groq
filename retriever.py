@@ -1,13 +1,13 @@
 from typing import List, Dict
 from rank_bm25 import BM25Okapi
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 import numpy as np
 
 class Retriever:
     def __init__(self):
         self.chunks = []
         self.bm25 = None
-        self.semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
+        # self.semantic_model = SentenceTransformer('all-MiniLM-L6-v2')
         self.embeddings = None
         
     def add_documents(self, chunks: List[str]):
@@ -19,9 +19,9 @@ class Retriever:
         self.bm25 = BM25Okapi(tokenized_chunks)
         print("bm25 loaded")
         # Підготовка семантичного пошуку
-        print("loading semantic model")
-        self.embeddings = self.semantic_model.encode(chunks)
-        print("semantic model loaded")
+        # print("loading semantic model")
+        # self.embeddings = self.semantic_model.encode(chunks)
+        # print("semantic model loaded")
         
     def retrieve(self, query: str, 
                 use_bm25: bool = True, 
@@ -35,10 +35,10 @@ class Retriever:
             bm25_top_k = np.argsort(bm25_scores)[-top_k:]
             results.extend([self.chunks[i] for i in bm25_top_k])
             
-        if use_semantic:
-            query_embedding = self.semantic_model.encode(query)
-            similarities = np.dot(self.embeddings, query_embedding)
-            semantic_top_k = np.argsort(similarities)[-top_k:]
-            results.extend([self.chunks[i] for i in semantic_top_k])
+        # if use_semantic:
+        #     query_embedding = self.semantic_model.encode(query)
+        #     similarities = np.dot(self.embeddings, query_embedding)
+        #     semantic_top_k = np.argsort(similarities)[-top_k:]
+        #     results.extend([self.chunks[i] for i in semantic_top_k])
             
         return list(set(results))  # Видаляємо дублікати
