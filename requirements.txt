@@ -1,2 +1,7 @@
-gradio
+sentence-transformers
+rank_bm25
 litellm
+python-dotenv
+nltk 
+datasets
+gradio

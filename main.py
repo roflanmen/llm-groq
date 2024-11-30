@@ -1,28 +1,48 @@
+from chunker import DocumentChunker
+from retriever import Retriever
+from llm_interface import LLMInterface
+from dotenv import load_dotenv
+import nltk
+nltk.download('gutenberg')
+from nltk.corpus import gutenberg
 import gradio as gr
-from litellm import completion
-import os
 
+class RAGSystem:
+    def __init__(self):
+        self.chunker = DocumentChunker()
+        self.retriever = Retriever()
+        self.llm = LLMInterface()
+        
+    def load_documents(self, text: str):
+        chunks = self.chunker.chunk_text(text)
+        self.retriever.add_documents(chunks)
+        
+    def answer_question(self, 
+                       query: str, 
+                       api_key: str,
+                       use_bm25: bool = True, 
+                       use_semantic: bool = True) -> str:
+        relevant_chunks = self.retriever.retrieve(
+            query, 
+            use_bm25=use_bm25, 
+            use_semantic=use_semantic
+        )
+        
+        return self.llm.generate_response(query, relevant_chunks, api_key)
 
-def run(character, world, plot, api_key):
-    os.environ['GROQ_API_KEY'] = api_key
-    response = completion(
-        model="groq/llama3-8b-8192", 
-        messages=[
-            {
-                "role": "user", 
-                "content": f"""
-                    Imagine you are the master storyteller of an ancient kingdom. You have been summoned by the king to weave a grand tale based on the following elements: 
-                    A character provided by the user: {character}
-                    A setting provided by the user: {world}
-                    A plot twist provided by the user: {plot}
-                    Using these elements, craft a vivid and immersive story that surprises and delights the audience. Feel free to expand creatively on the details provided while maintaining the spirit of the user’s input
-                """}
-        ],
+    def run(self, text, api_key):
+        return self.answer_question(text, api_key)
+# Приклад використання
+if __name__ == "__main__":
+    rag = RAGSystem()
+    
+    # text = "\n".join(str(gutenberg.raw(file_id)) for file_id in gutenberg.fileids())
+    text = str(gutenberg.raw('bible-kjv.txt'))
+    rag.load_documents(text)
+    
+    demo = gr.Interface(
+        fn=rag.run,
+        inputs=["text", "text"],
+        outputs=["text"],
     )
-    return response['choices'][0]['message']['content']
-demo = gr.Interface(
-    fn=run,
-    inputs=["text", "text", "text", "text"],
-    outputs=["text"],
-)
-demo.launch()
+    demo.launch()
