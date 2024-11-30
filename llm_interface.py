@@ -5,14 +5,14 @@ from litellm import completion
 
 class LLMInterface:
     def generate_response(self, query: str, context: List[str], api_key: str) -> str:
-        prompt = f"""На основі наданого контексту, дайте відповідь на запитання.
+        prompt = f"""Based on the provided context, please answer the question.
         
-        Контекст:
+        Context:
         {' '.join(context)}
 
-        Запитання: {query}
+        Question: {query}
 
-        У відповідь напиши відповідь та пояснення."""
+        Please provide an answer and explanation."""
         
         response = completion(
             model="groq/llama3-8b-8192",
