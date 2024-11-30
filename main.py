@@ -44,5 +44,6 @@ if __name__ == "__main__":
         fn=rag.run,
         inputs=["text", "text"],
         outputs=["text"],
+        title="RAG System with Groq LLM, trained on Bible",
     )
     demo.launch()
