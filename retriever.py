@@ -13,12 +13,10 @@ class Retriever:
     def add_documents(self, chunks: List[str]):
         self.chunks = chunks
         
-        # Підготовка BM25
         tokenized_chunks = [chunk.split() for chunk in chunks]
         print("loading bm25")
         self.bm25 = BM25Okapi(tokenized_chunks)
         print("bm25 loaded")
-        # Підготовка семантичного пошуку
         # print("loading semantic model")
         # self.embeddings = self.semantic_model.encode(chunks)
         # print("semantic model loaded")
@@ -41,4 +39,4 @@ class Retriever:
         #     semantic_top_k = np.argsort(similarities)[-top_k:]
         #     results.extend([self.chunks[i] for i in semantic_top_k])
             
-        return list(set(results))  # Видаляємо дублікати
+        return list(set(results))

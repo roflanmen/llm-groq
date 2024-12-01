@@ -19,10 +19,8 @@ class DocumentChunker:
             sentence_length = len(sentence)
             
             if current_length + sentence_length > self.chunk_size:
-                # Зберігаємо поточний чанк
                 chunks.append(" ".join(current_chunk))
                 
-                # Зберігаємо останні речення для перекриття
                 overlap_sentences = current_chunk[-2:] if len(current_chunk) > 2 else current_chunk
                 current_chunk = overlap_sentences + [sentence]
                 current_length = sum(len(s) for s in current_chunk)

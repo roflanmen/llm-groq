@@ -32,7 +32,7 @@ class RAGSystem:
 
     def run(self, text, api_key):
         return self.answer_question(text, api_key)
-# Приклад використання
+
 if __name__ == "__main__":
     rag = RAGSystem()
     
